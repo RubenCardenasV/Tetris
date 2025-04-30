@@ -1,0 +1,270 @@
+.tetris {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.instructions, .mobile-controls {
+  display: block;
+}
+
+.instructions {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid #61dafb;
+  color: #fff;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.instructions h2 {
+  color: #61dafb;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.instructions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.instructions li {
+  margin-bottom: 10px;
+  color: #ccc;
+}
+
+.score, .score-mobile {
+  font-size: 1.5rem;
+  font-family: Arial, sans-serif;
+  color: #00ff88;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.score .badge {
+  font-size: 1.2rem;
+  background: rgba(0, 255, 136, 0.2) !important;
+  color: #00ff88 !important;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.board-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-controls {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.dpad {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.control-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: none;
+  color: white;
+  transition: transform 0.1s ease;
+}
+
+.control-button:active {
+  transform: scale(0.95);
+}
+
+.control-button.left, .control-button.right {
+  background-color: #333;
+}
+
+.control-button.rotate {
+  background-color: #444;
+}
+
+.control-button.drop {
+  background-color: #555;
+}
+
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 100%;
+  max-width: 400px;
+  background: rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid rgba(255, 0, 0, 0.3) !important;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+}
+
+.game-over .card-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #ff4444;
+  text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.game-over .card-text {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.board {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.cell.filled {
+  background: #00ff88;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    inset 0 0 10px rgba(0, 255, 136, 0.5),
+    0 0 10px rgba(0, 255, 136, 0.3);
+}
+
+@media screen and (max-width: 1024px) {
+  .instructions {
+    display: none;
+  }
+  
+  .mobile-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px;
+    margin: 20px 0;
+    gap: 20px;
+  }
+
+  .board {
+    transform: scale(0.8);
+  }
+
+  .cell {
+    width: 25px;
+    height: 25px;
+  }
+
+  .control-button {
+    width: 55px;
+    height: 55px;
+    font-size: 1.6rem;
+  }
+
+  .score .badge {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .instructions {
+    display: none;
+  }
+  
+  .mobile-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 30px;
+    gap: 20px;
+  }
+
+  .board {
+    transform: scale(0.8);
+  }
+
+  .cell {
+    width: 25px;
+    height: 25px;
+  }
+
+  .control-button {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+
+  .score .badge {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .board {
+    transform: scale(0.7);
+  }
+
+  .cell {
+    width: 20px;
+    height: 20px;
+  }
+
+  .control-button {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+  }
+
+  .score-mobile .badge {
+    font-size: 0.9rem;
+  }
+} 
