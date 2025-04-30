@@ -1,5 +1,5 @@
 ##URL:
-https://app.netlify.com/sites/tetrisrubenn/overview
+https://tetrisrubenn.netlify.app
 
 #### Descripcion
 este es un proyecto juego puzzle tetris un juego clasico en el cual existe movimiento, puntuacion y coliciones.
