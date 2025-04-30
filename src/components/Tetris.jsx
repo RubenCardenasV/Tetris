@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Board from './Board';
 import './Tetris.css';
 
@@ -7,10 +7,9 @@ const Tetris = () => {
   const [currentPiece, setCurrentPiece] = useState(null);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [touchStart, setTouchStart] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
-  const pieces = [
+  const pieces = useMemo(() => [
     [[1, 1, 1, 1]], // I
     [[1, 1], [1, 1]], // O
     [[1, 1, 1], [0, 1, 0]], // T
@@ -18,7 +17,23 @@ const Tetris = () => {
     [[1, 1, 1], [0, 0, 1]], // J
     [[1, 1, 0], [0, 1, 1]], // S
     [[0, 1, 1], [1, 1, 0]]  // Z
-  ];
+  ], []);
+
+  const isValidMove = useCallback((piece) => {
+    return piece.shape.every((row, y) => {
+      return row.every((cell, x) => {
+        if (!cell) return true;
+        const newX = x + piece.position.x;
+        const newY = y + piece.position.y;
+        return (
+          newX >= 0 &&
+          newX < 10 &&
+          newY < 20 &&
+          (newY < 0 || board[newY][newX] === 0)
+        );
+      });
+    });
+  }, [board]);
 
   const resetGame = useCallback(() => {
     setBoard(Array(20).fill().map(() => Array(10).fill(0)));
@@ -40,7 +55,7 @@ const Tetris = () => {
     }
 
     setCurrentPiece(newPiece);
-  }, [pieces]);
+  }, [pieces, isValidMove]);
 
   const rotatePiece = useCallback(() => {
     if (!currentPiece || gameOver) return;
@@ -57,7 +72,7 @@ const Tetris = () => {
     if (isValidMove(newPiece)) {
       setCurrentPiece(newPiece);
     }
-  }, [currentPiece, gameOver]);
+  }, [currentPiece, gameOver, isValidMove]);
 
   const movePiece = useCallback((direction) => {
     if (!currentPiece || gameOver) return;
@@ -73,23 +88,7 @@ const Tetris = () => {
     if (isValidMove(newPosition)) {
       setCurrentPiece(newPosition);
     }
-  }, [currentPiece, gameOver]);
-
-  const isValidMove = useCallback((piece) => {
-    return piece.shape.every((row, y) => {
-      return row.every((cell, x) => {
-        if (!cell) return true;
-        const newX = x + piece.position.x;
-        const newY = y + piece.position.y;
-        return (
-          newX >= 0 &&
-          newX < 10 &&
-          newY < 20 &&
-          (newY < 0 || board[newY][newX] === 0)
-        );
-      });
-    });
-  }, [board]);
+  }, [currentPiece, gameOver, isValidMove]);
 
   const checkLines = useCallback(() => {
     let linesCleared = 0;
@@ -143,7 +142,6 @@ const Tetris = () => {
     let dropDistance = 0;
     let newPosition = { ...currentPiece };
 
-    // Encontrar la distancia máxima que puede caer
     while (true) {
       const testPosition = {
         ...currentPiece,
@@ -161,7 +159,6 @@ const Tetris = () => {
       }
     }
 
-    // Colocar la pieza en la posición más baja posible
     const newBoard = [...board];
     newPosition.shape.forEach((row, y) => {
       row.forEach((cell, x) => {
@@ -171,36 +168,11 @@ const Tetris = () => {
       });
     });
 
-    // Bonus de puntos por hard drop
     setScore(prev => prev + (dropDistance * 2));
     setBoard(newBoard);
     setCurrentPiece(null);
     checkLines();
   }, [currentPiece, board, isValidMove, checkLines, gameOver]);
-
-  const handleTouchStart = (e) => {
-    setTouchStart(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!touchStart || !currentPiece || gameOver) return;
-
-    const touchEnd = e.touches[0].clientX;
-    const diff = touchStart - touchEnd;
-
-    if (Math.abs(diff) > 50) { // Umbral para evitar movimientos accidentales
-      if (diff > 0) {
-        movePiece(-1);
-      } else {
-        movePiece(1);
-      }
-      setTouchStart(touchEnd);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setTouchStart(null);
-  };
 
   const handleControlPress = (action) => {
     if (gameOver) {
@@ -272,7 +244,7 @@ const Tetris = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1024);
     };
 
     window.addEventListener('resize', handleResize);
@@ -304,7 +276,7 @@ const Tetris = () => {
           <div className="col-md-6">
             <div className="board-container">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <div className={`score ${isMobile ? 'score-mobile' : ''}`}>
+                <div className="score">
                   <span className="badge bg-primary p-2">
                     Puntuación: {score}
                   </span>
